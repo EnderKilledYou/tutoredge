@@ -15,7 +15,20 @@ customize each message before it goes out.
 There is a run.bat that creates a php server for the initial host. Once created and opened the app is cached in your
 browser and you no longer need to run the webserver. It will sit in your browser cache until you clear your cache. Very useful.
 
+## Monitored subreddits
 
+You only need to put the part AFTER https://reddit.com
+
+
+`/r/forhire/` for example (you )
+
+for multis you need to include the `/new/`
+
+`/user/creativesummoner/m/homework/new/`
+
+## Message templates
+
+You can use full reddit markdown
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

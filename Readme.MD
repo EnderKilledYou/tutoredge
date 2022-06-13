@@ -20,7 +20,7 @@ browser and you no longer need to run the webserver. It will sit in your browser
 You only need to put the part AFTER https://reddit.com
 
 
-`/r/forhire/` for example (you )
+`/r/forhire/` for example 
 
 for multis you need to include the `/new/`
 

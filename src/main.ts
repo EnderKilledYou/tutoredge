@@ -8,15 +8,24 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Notifications from 'vue-notification'
 // @ts-ignore
-import velocity      from 'velocity-animate'
+import velocity from 'velocity-animate'
+// @ts-ignore
+import VueNativeNotification from 'vue-native-notification'
 
-Vue.use(Notifications, { velocity })
+Vue.use(Notifications, {velocity})
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-new Vue({
+
+
+Vue.use(VueNativeNotification, {
+  // Automatic permission request before
+  // showing notification (default: true)
+  requestOnNotify: true
+})
+const v = new Vue({
   router,
   store,
   render: h => h(App)
@@ -30,19 +39,29 @@ async function Search() {
     title: 'Updating subreddits',
     text: 'Update starting'
   })
-  debugger;
+  const updated_subreddits = [];
   for (const subreddit of subreddits) {
     Vue.notify({
       group: 'foo',
       title: 'Updating subreddit ' + subreddit,
       text: ''
     })
+
+    const beforeLength = store.state.JobList.length;
     await store.commit('getSubreddit', subreddit);
+
+    if (store.state.JobList.length > beforeLength) {
+      updated_subreddits.push(subreddit);
+    }
+
     Vue.notify({
       group: 'foo',
       title: 'Finished subreddit ' + subreddit,
       text: ''
     })
+  }
+  if(updated_subreddits.length >0){
+    store.state.HasNotification = true;
   }
   await store.dispatch('save')
   Vue.notify({
@@ -54,4 +73,5 @@ async function Search() {
 }
 
 setInterval(Search, 60000);
-setTimeout(Search,7000);
+setTimeout(Search, 7000);
+

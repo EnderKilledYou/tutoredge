@@ -23,11 +23,21 @@ export class MessageTemplate {
 
 }
 
+export class ScanOptions {
+  ShouldSoundAlert: boolean = false;
+  ShouldNotify: boolean = false;
+  AlertNoise: string = ''
+  PostsToShow: number = 50
+
+
+}
+
 async function downloadsubredditdata(subreddit: string) {
   if (subreddit.indexOf('/m/') >= 0) {
     // @ts-ignore
     return await (await fetch(`https://old.reddit.com${subreddit}.json?limit=100`, defaultOptions)).json()
   }
+
   // @ts-ignore
   const result = await fetch(`https://old.reddit.com/r/${subreddit}/new/.json?limit=100`, defaultOptions);
   return await result.json();
@@ -46,20 +56,25 @@ function sortandcleanjobs(state: any) {
 
 export default new Vuex.Store({
   state: {
-
+    Options: new ScanOptions(),
     SearchActive: false,
     MessageTemplates: [] as MessageTemplate[],
     JobList: [] as RedditJob[],
     BlockedUsers: [] as string[],
     BlockedWords: [] as string[],
-    SubReddits: [] as string[]
+    SubReddits: [] as string[],
+    HasNotification: false,
   },
-  getters: {},
+  getters: {
+    Options: state => {
+      return state.Options;
+    }
+  },
   mutations: {
     getSubreddit: async (state, subreddit) => {
       // @ts-ignore
       let json;
-      debugger;
+
       try {
         json = await downloadsubredditdata(subreddit);
       } catch (e) {
@@ -68,6 +83,7 @@ export default new Vuex.Store({
       }
 
       const posts = json.data.children.map((a: any) => a.data) as RedditPost[];
+      let PushedItems = false;
       for (let post of posts) {
 
         let data_lower = post.selftext.toLowerCase();
@@ -76,15 +92,20 @@ export default new Vuex.Store({
         const isBlockedUser = state.BlockedUsers.findIndex(a => a === post.author) >= 0;
         const isSeen = state.JobList.find(a => a.Id === post.id)
         if (isBlockedWord || isBlockedUser || isSeen) continue;
-
+        PushedItems = true;
 
         state.JobList.push(new RedditJob(post));
 
       }
+      if (PushedItems ) {
+        state.HasNotification = PushedItems;
+      }
+
       sortandcleanjobs(state);
+
     },
     addPosts: (state, jobList) => {
-      debugger;
+
 
       for (const post of jobList) {
         state.JobList.push(post);
@@ -149,25 +170,37 @@ export default new Vuex.Store({
 
   },
   actions: {
-    save: injectee => localStorage.setItem("state", JSON.stringify(injectee.state)),
-    retr: injectee => {
-      debugger;
-      let old_state = localStorage.getItem("state");
-      if (old_state) {
-        try {
-          const state_new = JSON.parse(old_state);
-          state_new.MessageTemplates.forEach((b: MessageTemplate) => injectee.commit('addTemplate', b));
-          state_new.BlockedUsers.forEach((b: string) => injectee.commit('addBlockedUser', b));
-          state_new.BlockedWords.forEach((b: string) => injectee.commit('addBlocked', b));
-          injectee.commit('addPosts', state_new.JobList);
-          state_new.SubReddits.forEach((b: string) => injectee.commit('addSubReddit', b));
+    save: injectee => {
 
-        } catch (e) {
-          console.error(e);
-        }
+      localStorage.setItem("state", JSON.stringify(injectee.state))
+    },
+    retr: injectee => {
+
+      let old_state = localStorage.getItem("state");
+      if (!old_state) {
+        return;
+      }
+      try {
+
+        const state_new = JSON.parse(old_state);
+        state_new.MessageTemplates.forEach((b: MessageTemplate) => injectee.commit('addTemplate', b));
+        state_new.BlockedUsers.forEach((b: string) => injectee.commit('addBlockedUser', b));
+        state_new.BlockedWords.forEach((b: string) => injectee.commit('addBlocked', b));
+        injectee.commit('addPosts', state_new.JobList);
+        state_new.SubReddits.forEach((b: string) => injectee.commit('addSubReddit', b));
+        injectee.state.Options = state_new.Options;
+      } catch (e) {
+        console.error(e);
       }
     }
 
   },
   modules: {}
 })
+
+function playSound(sound: string) {
+
+  const audio = new Audio(sound);
+  audio.play();
+
+}

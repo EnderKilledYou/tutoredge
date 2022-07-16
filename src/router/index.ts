@@ -5,6 +5,7 @@ import BlockedUsers from '../views/BlockedUsers.vue'
 import ManageWords from '../views/BlockedWords.vue'
 import MessageTemplatesManageWords from '../views/MessageTemplates.vue'
 import ShowPosts from '../views/ShowPosts.vue'
+import Options from "@/components/Options.vue";
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -27,8 +28,12 @@ const routes: Array<RouteConfig> = [
     component: MessageTemplatesManageWords
   },{
     path: '/manage_posts',
-    name: 'managepsots',
+    name: 'manageposts',
     component: ShowPosts
+  },{
+    path: '/options',
+    name: 'options',
+    component: Options
   }
 ]
 

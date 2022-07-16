@@ -123,7 +123,7 @@ export default class ManagePosts extends Vue {
           return 1;
         return -1;
       }
-    }).slice(0,20)
+    }).slice(0,+this.$store.state.Options.PostsToShow)
   }
 
 

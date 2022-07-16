@@ -188,7 +188,7 @@ export default new Vuex.Store({
         state_new.BlockedWords.forEach((b: string) => injectee.commit('addBlocked', b));
         injectee.commit('addPosts', state_new.JobList);
         state_new.SubReddits.forEach((b: string) => injectee.commit('addSubReddit', b));
-        injectee.state.Options = state_new.Options;
+        injectee.state.Options = state_new.Options || new ScanOptions();
       } catch (e) {
         console.error(e);
       }

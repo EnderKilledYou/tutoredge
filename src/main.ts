@@ -30,6 +30,9 @@ const v = new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+//@ts-ignore
+Vue.notification.requestPermission()
+  .then(console.log) // Prints "granted", "denied" or "default"
 store.dispatch('retr')
 
 async function Search() {

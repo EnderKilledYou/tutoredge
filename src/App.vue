@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/options">Options</router-link>
-      |
+      <b-button  v-if="ShowOptions" @click="ToggleOptions">Options</b-button>
+   <span  v-if="ShowOptions">| </span>
       <router-link to="/manage_subreddits">Monitored Subreddits</router-link>
       |
       <router-link to="/manage_message_templates">Message Templates</router-link>
@@ -32,7 +32,7 @@ export default class App extends Vue {
 
   @Watch('Notifications') update(a: any, b: any) {
     debugger;
-    if(!this.$store.state.HasNotification) return;
+    if (!this.$store.state.HasNotification) return;
     this.$store.state.HasNotification = false;
     if (this.$store.state.Options.ShouldNotify) {
       //@ts-ignore
@@ -40,6 +40,21 @@ export default class App extends Vue {
         body: 'There are new posts for you to check out'
       }, {})
     }
+  }
+created(){
+  this.ShowOptions = this.$router.currentRoute.path === "/manage_posts"
+}
+  ShowOptions = false;
+
+  @Watch('$route')
+  Route() {
+    this.ShowOptions = this.$router.currentRoute.path === "/manage_posts"
+  }
+
+  ToggleOptions() {
+
+    if (this.$router.currentRoute.path === "/manage_posts")
+      this.$store.state.ShowOptions = !this.$store.state.ShowOptions
   }
 }
 </script>

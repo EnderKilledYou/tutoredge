@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container v-if="Show">
 
 
 
@@ -7,7 +7,7 @@
       <b-input type="number" v-model="Options.PostsToShow"></b-input>
 
     </b-form-group>
-    <b-form-group label="Should Browser Notify">
+    <b-form-group  label="Should Browser Notify">
       <b-checkbox v-model="Options.ShouldNotify"></b-checkbox>
     </b-form-group>
   </b-container>
@@ -22,6 +22,9 @@ import store, {ScanOptions} from "@/store";
 export default class Options extends Vue {
   get Options(){
     return this.$store.state.Options;
+  }
+  get Show(){
+    return this.$store.state.ShowOptions;
   }
   // Options: ScanOptions = new ScanOptions();
   //

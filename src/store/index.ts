@@ -64,6 +64,7 @@ export default new Vuex.Store({
     BlockedWords: [] as string[],
     SubReddits: [] as string[],
     HasNotification: false,
+    ShowOptions:false
   },
   getters: {
     Options: state => {

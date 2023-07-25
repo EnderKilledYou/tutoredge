@@ -1,3 +1,13 @@
+## usage
+
+npm run build
+
+run.bat 
+
+*visit in browser*
+
+cntrl-c to stop webserver. it is now served from cache in browser forever.
+
 # Tutor Edge
 
 Tutor edge is a no backend web app (PWA) that scans reddit subreddits. I wrote it in about 10 minutes. It features
